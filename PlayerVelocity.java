@@ -12,24 +12,46 @@
  *      Player Status
  *      Tile Marker
  */
-public class PlayerVelocity
+public class PlayerVelocity extends CoordinatePairVelocityAdapter
 {
+    
     // Class Attributes
-    private int xVelo;
-    private int yVelo;
+    private static final int DEFAULT_VELOCITY = 0;
 
     // Class Constructors
+    PlayerVelocity()
+    {
+        this.setXVelocity(DEFAULT_VELOCITY);
+        this.setYVelocity(DEFAULT_VELOCITY);
+    }
+
+    PlayerVelocity(int xVelo, int yVelo)
+    {
+        this.setXVelocity(xVelo);
+        this.setYVelocity(yVelo);
+    }
+
+    PlayerVelocity(PlayerVelocity velo)
+    {
+        this.setXVelocity(velo.getXVelocity());
+        this.setYVelocity(velo.getYVelocity());
+    }
+
+    PlayerVelocity(Direction direction)
+    {
+        this.setXVelocity(direction.veloDirection.getXVelocity());
+        this.setYVelocity(direction.veloDirection.getYVelocity());
+    }
 
     // Class Methods
 
-    // Getters
-    public int getXVelocity()
+    PlayerVelocity Test()
     {
-        return this.xVelo;
+        PlayerVelocity velo = new PlayerVelocity(Direction.UP); 
+        return velo;
     }
 
-    public int getYVelocity()
-    {
-        return this.yVelo;
-    }
+    // Getters
+
+    // Setters
 }
