@@ -2,25 +2,30 @@
  * 
  * 
  */
-public class PlayerPosition
+public class PlayerPosition extends CoordinatePairPositionAdapter
 {
     // Class Fields
-    private int DEFAULT_POSITION = 0;
-    private int xPos;                       // x-axis position
-    private int yPos;                       // y-axis position
+    private static final int DEFAULT_POSITION = 0;
+    // private int xPos;                       // x-axis position
+    // private int yPos;                       // y-axis position
 
 
     // Class Constructors
     PlayerPosition()
     {
-        this.xPos = DEFAULT_POSITION;
-        this.yPos = DEFAULT_POSITION;   
+        this.setXPosition(DEFAULT_POSITION);
+        this.setYPosition(DEFAULT_POSITION);
     }
 
     PlayerPosition(int xStart, int yStart)
     {
-        this.xPos = xStart;
-        this.yPos = yStart;
+        this.setXPosition(xStart);
+        this.setYPosition(yStart);
+    }
+
+    PlayerPosition(PlayerPosition position)
+    {
+        
     }
 
 
@@ -34,14 +39,5 @@ public class PlayerPosition
     }
 
     // Getters
-    public int getXPosition()
-    {
-        return this.xPos;
-    }
-
-    public int getYPosition()
-    {
-        return this.yPos;
-    }
 
 }  
