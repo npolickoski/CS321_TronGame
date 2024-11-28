@@ -2,7 +2,8 @@ package The_Users.Player;
 
 import com.badlogic.gdx.graphics.Color;
 
-public enum PlayerColor {
+public enum PlayerColor 
+{
     CYAN(Color.CYAN), 
     RED(Color.RED), 
     WHITE(Color.WHITE), 

@@ -10,6 +10,7 @@ public class Player
     private int xVelocity, yVelocity; // Velocity along x/y-axis (-1, 0, 1)
     private PlayerColor playerColor; // The player's unique color (enum)
     private boolean alive; // Tracks if the player is alive or eliminated
+    private boolean started;
 
     /**
      * Constructor for Player with specified color.
@@ -26,6 +27,7 @@ public class Player
         this.yVelocity = 0; // Default stationary
         this.playerColor = color;
         this.alive = true; // Player starts alive
+        this.started = false;   // Player starts stationary, needed to not kill player after marking initial square
     }
 
     /**
@@ -52,6 +54,13 @@ public class Player
         }
     }
 
+
+    public void reverse() 
+    {
+        xPosition -= xVelocity;
+        yPosition -= yVelocity;
+    }
+
     /**
      * Sets the player's direction using velocity.
      * 
@@ -60,6 +69,8 @@ public class Player
      */
     public void setDirection(int xVelocity, int yVelocity) 
     {
+        this.started = true;
+
         // Ensure only one direction is set at a time
         if (Math.abs(xVelocity) + Math.abs(yVelocity) <= 1) 
         {
@@ -89,6 +100,11 @@ public class Player
     public boolean isAlive() 
     {
         return alive;
+    }
+
+    public boolean isStarted() 
+    {
+        return started;
     }
 
     /**
