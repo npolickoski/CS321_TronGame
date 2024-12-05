@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 public enum PlayerColor 
 {
+    // PlayerColor Enums
     CYAN(Color.CYAN), 
     RED(Color.RED), 
     WHITE(Color.WHITE), 
@@ -11,8 +12,12 @@ public enum PlayerColor
     BLUE(Color.BLUE),
     BLACK(Color.BLACK);
 
+
+    // PlayerColor Attributes
     private final Color gdxColor; // Corresponding libGDX Color
 
+
+    // PlayerColor Methods
     /**
      * Constructor for the enum values.
      *

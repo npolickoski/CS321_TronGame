@@ -6,12 +6,15 @@ import The_Users.Player.PlayerColor;
 
 public class Player 
 {
-    private int xPosition, yPosition; // Current x/y position on the grid
-    private int xVelocity, yVelocity; // Velocity along x/y-axis (-1, 0, 1)
-    private PlayerColor playerColor; // The player's unique color (enum)
-    private boolean alive; // Tracks if the player is alive or eliminated
-    private boolean started;
+    // Player Attributes
+    private int xPosition, yPosition;   // Current x/y position on the grid
+    private int xVelocity, yVelocity;   // Velocity along x/y-axis (-1, 0, 1)
+    private PlayerColor playerColor;    // The player's unique color (enum)
+    private boolean alive;              // Tracks if the player is alive or eliminated
+    private boolean started;            // tracks if player has started moving
 
+
+    // Player Methods
     /**
      * Constructor for Player with specified color.
      * 
@@ -23,11 +26,11 @@ public class Player
     {
         this.xPosition = startX;
         this.yPosition = startY;
-        this.xVelocity = 0; // Default stationary
-        this.yVelocity = 0; // Default stationary
+        this.xVelocity = 0;         // Default stationary
+        this.yVelocity = 0;         // Default stationary
         this.playerColor = color;
-        this.alive = true; // Player starts alive
-        this.started = false;   // Player starts stationary, needed to not kill player after marking initial square
+        this.alive = true;          // Player starts alive
+        this.started = false;       // Player starts stationary, needed to not kill player after marking initial square
     }
 
     /**
@@ -42,7 +45,7 @@ public class Player
     }
 
     /**
-     * Updates the player's position based on velocity.
+     * Updates the player's forward position based on velocity.
      * Checks if the player is alive before updating.
      */
     public void updatePosition() 
@@ -54,7 +57,9 @@ public class Player
         }
     }
 
-
+    /**
+     * Updates the player's reverse position based on velocity.
+     */
     public void reverse() 
     {
         xPosition -= xVelocity;
@@ -89,7 +94,7 @@ public class Player
     public void eliminate() 
     {
         this.alive = false;
-        stopMovement(); // Stops movement upon elimination
+        stopMovement();         // Stops movement upon elimination
     }
 
     /**
@@ -102,6 +107,11 @@ public class Player
         return alive;
     }
 
+     /**
+     * Checks if the player has started moving.
+     * 
+     * @return True if the player has started moving, false otherwise.
+     */
     public boolean isStarted() 
     {
         return started;

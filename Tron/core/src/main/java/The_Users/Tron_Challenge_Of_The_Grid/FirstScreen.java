@@ -15,23 +15,31 @@ import The_Users.Grid.Grid;
 import The_Users.Player.Player;
 import The_Users.Player.PlayerColor;
 
-public class FirstScreen implements Screen 
+/**
+ * Represents the first screen of the Tron game, implementing game logic,
+ * rendering, input handling, and resource management.
+ */
+public class FirstScreen implements Screen
 {
-    private int                 gridSize = 64;
-    private Grid                grid;
-    private SpriteBatch         batch;
-    private Texture[]           tileTexture;
-    private Texture[]           bikeTexture;
-    private OrthographicCamera  camera;
-    private FitViewport         viewport;
+    // FirstScreen Attributes
+    private int gridSize = 64;                  // Grid size for the game board
+    private Grid grid;                          // Game grid
+    private SpriteBatch batch;                  // Rendering batch
+    private Texture[] tileTexture;              // Array of textures for tiles
+    private Texture[] bikeTexture;              // Array of textures for bikes
+    private OrthographicCamera camera;          // Camera for viewing the game
+    private FitViewport viewport;               // Viewport for screen adaptation
+    private Player[] players;                   // Array of players in the game
+    private float movementTimer = 0;            // Timer to control player movement
 
-    private Player[]            players;
-    private Player              player1;
-    private Player              player2;
-    private float               movementTimer = 0;
 
+    // FirstScreen Methods
+    /**
+     * Overridden LibGDX function
+     * Initializes the screen, including textures, grid, camera, and players.
+     */
     @Override
-    public void show() 
+    public void show()
     {
         // Initialize the camera and viewport
         camera = new OrthographicCamera();
@@ -41,117 +49,111 @@ public class FirstScreen implements Screen
         // Initialize rendering tools
         batch = new SpriteBatch();
         
-        tileTexture = new Texture[5]; // Array to hold 5 texture objects
-
-        for (int i = 0; i < tileTexture.length; i++) 
+        // Load tile textures
+        tileTexture = new Texture[5];
+        for (int i = 0; i < tileTexture.length; i++)
         {
-            String fileName = "100xTileResize" + (i + 1) + ".png"; // Dynamic file name
-            tileTexture[i] = new Texture(fileName); // Assign texture to the array
+            String fileName = "100xTileResize" + (i + 1) + ".png";
+            tileTexture[i] = new Texture(fileName);
         }
 
-        bikeTexture = new Texture[4]; // Array to hold 5 texture objects
-
-        for (int i = 0; i < bikeTexture.length; i++) 
+        // Load bike textures
+        bikeTexture = new Texture[4];
+        for (int i = 0; i < bikeTexture.length; i++)
         {
-            String fileName = "100xBikeResize" + (i + 2) + ".png"; // Dynamic file name
-            bikeTexture[i] = new Texture(fileName); // Assign texture to the array
+            String fileName = "100xBikeResize" + (i + 2) + ".png";
+            bikeTexture[i] = new Texture(fileName);
         }
 
+        // Initialize the grid
+        grid = new Grid(gridSize, gridSize);
 
-        // Create a grid
-        grid = new Grid(gridSize, gridSize); // 64x64 grid
-
+        // Create and position players
         players = new Player[4];
-
         players[0] = new Player(0, 0, PlayerColor.RED);
         players[1] = new Player(0, gridSize - 1, PlayerColor.WHITE);
         players[2] = new Player(gridSize - 1, 0, PlayerColor.GOLD);
         players[3] = new Player(gridSize - 1, gridSize - 1, PlayerColor.BLUE);
     }
 
+    /**
+     * Overridden LibGDX function
+     * Handles rendering the game, updating logic, and processing input.
+     * 
+     * @param delta time elapsed since the last frame
+     */
     @Override
-    public void render(float delta) 
+    public void render(float delta)
     {
         // Clear the screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Update camera
+        // Update camera and set the batch projection
         camera.update();
         batch.setProjectionMatrix(camera.combined);
 
-        // Handle input and game logic
+        // Handle input and update game logic
         input();
         logic();
 
-        // Render the grid
+        // Render the grid and players
         batch.begin();
         renderGrid();
         renderPlayer();
-        // batch.draw(tileTexture[1], 0, 0, 1, 1); // Draw each tile as 1x1 unit
-        // batch.draw(tileTexture[2], 0, gridSize - 1, 1, 1); // Draw each tile as 1x1 unit
-        // batch.draw(tileTexture[3], gridSize - 1, gridSize - 1, 1, 1); // Draw each tile as 1x1 unit
-        // batch.draw(tileTexture[4], gridSize - 1, 0, 1, 1); // Draw each tile as 1x1 unit
-        // batch.draw(bikeTexture[0], 0, 0, 1, 1); // Draw each bike as 1x1 unit
-        // batch.draw(bikeTexture[1], 0, gridSize - 1, 1, 1); // Draw each bike as 1x1 unit
-        // batch.draw(bikeTexture[2], gridSize - 1, gridSize - 1, 1, 1); // Draw each bike as 1x1 unit
-        // batch.draw(bikeTexture[3], gridSize - 1, 0, 1, 1); // Draw each bike as 1x1 unit
         batch.end();
     }
 
-    private void renderGrid() 
+    /**
+     * Renders the game grid, drawing tiles with their respective colors.
+     */
+    private void renderGrid()
     {
-        // Render each tile in the grid
         for (int y = 0; y < grid.getRows(); y++)
         {
-            for (int x = 0; x < grid.getCols(); x++) 
+            for (int x = 0; x < grid.getCols(); x++)
             {
                 PlayerColor tileColor = grid.getTileColor(x, y);
-                // batch.setColor(tileColor); // Set the tile color
-                switch (tileColor) 
+                switch (tileColor)
                 {
                     case RED:
-                        batch.draw(tileTexture[1], x, y, 1, 1); // Draw each tile as 1x1 unit
-                        
+                        batch.draw(tileTexture[1], x, y, 1, 1);
                         break;
-                    
                     case WHITE:
-                        batch.draw(tileTexture[2], x, y, 1, 1); // Draw each tile as 1x1 unit
-                    
-                    break;
-                    
+                        batch.draw(tileTexture[2], x, y, 1, 1);
+                        break;
                     case GOLD:
-                        batch.draw(tileTexture[3], x, y, 1, 1); // Draw each tile as 1x1 unit
-                    
-                    break;
-                    
+                        batch.draw(tileTexture[3], x, y, 1, 1);
+                        break;
                     case BLUE:
-                        batch.draw(tileTexture[4], x, y, 1, 1); // Draw each tile as 1x1 unit
-                    
-                    break;
-
+                        batch.draw(tileTexture[4], x, y, 1, 1);
+                        break;
                     case CYAN:
                     default:
-                        batch.draw(tileTexture[0], x, y, 1, 1); // Draw each tile as 1x1 unit
-                    
+                        batch.draw(tileTexture[0], x, y, 1, 1);
                         break;
                 }
-
             }
         }
     }
 
+    /**
+     * Renders all players on the grid using their respective textures.
+     */
     private void renderPlayer()
     {
-        for (int i = 0; i < players.length; i++) 
+        for (int i = 0; i < players.length; i++)
         {
             batch.draw(bikeTexture[i], players[i].getXPosition(), players[i].getYPosition(), 1, 1);
         }
-
     }
 
+    /**
+     * Processes user input to control all players movements.
+     */
     private void input() 
     {
+        // Player 1 Controls
         if (Gdx.input.isKeyPressed(Input.Keys.W)) 
         {
             players[0].setDirection(0, 1);
@@ -169,7 +171,7 @@ public class FirstScreen implements Screen
             players[0].setDirection(1, 0);
         } 
 
-
+        // Player 2 Controls
         if (Gdx.input.isKeyPressed(Input.Keys.T)) 
         {
             players[1].setDirection(0, 1);
@@ -187,7 +189,7 @@ public class FirstScreen implements Screen
             players[1].setDirection(1, 0);
         }
 
-
+        // Player 3 Controls
         if (Gdx.input.isKeyPressed(Input.Keys.I)) 
         {
             players[2].setDirection(0, 1);
@@ -205,7 +207,7 @@ public class FirstScreen implements Screen
             players[2].setDirection(1, 0);
         }
 
-
+        // Player 4 Controls
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) 
         {
             players[3].setDirection(0, 1);
@@ -224,82 +226,93 @@ public class FirstScreen implements Screen
         }
     }
 
-    private void logic() 
+    /**
+     * Implements game logic, including player movement and collision detection.
+     */
+    private void logic()
     {
-        // Add game logic here (e.g., updating tile states)
         float delta = Gdx.graphics.getDeltaTime();
-
         movementTimer += delta;
 
-        if (movementTimer > .125f) 
+        if (movementTimer > 0.125f)
         {
             movementTimer = 0;
-            for (Player player : players) 
+            for (Player player : players)
             {
-                if (player.isAlive())       // Mark tile
+                if (player.isAlive()) 
                 {
-                    grid.setTileColor(player.getXPosition(), player.getYPosition(), player.getColor());    
+                    grid.setTileColor(player.getXPosition(), player.getYPosition(), player.getColor());
                 }
-                player.updatePosition();        // Move player
+                player.updatePosition();
 
-                if (player.isStarted()) 
+                if (player.isStarted())
                 {
-                    switch (grid.getTileColor(player.getXPosition(), player.getYPosition())) 
+                    switch (grid.getTileColor(player.getXPosition(), player.getYPosition()))
                     {
                         case CYAN:
-                            
                             break;
-
                         case BLACK:
                             player.reverse();
-                    
+                            break;
                         default:
                             player.eliminate();
                             break;
-                    }          
+                    }
                 }
             }
         }
-
-
     }
 
+    /**
+     * Overridden LibGDX function
+     * Scales the window appropriately upon a change.
+     */
     @Override
-    public void resize(int width, int height) 
+    public void resize(int width, int height)
     {
         viewport.update(width, height, true);
     }
 
+    /**
+     * Overridden LibGDX function
+     * No functionality as not needed to change
+     * Must be overridden for LibGDX inheritance to work correctly
+     */
     @Override
-    public void pause() 
-    {
-        
-    }
+    public void pause() {}
 
+    /**
+     * Overridden LibGDX function
+     * No functionality as not needed to change
+     * Must be overridden for LibGDX inheritance to work correctly
+     */
     @Override
-    public void resume() 
-    {
-        
-    }
+    public void resume() {}
 
+    /**
+     * Overridden LibGDX function
+     * No functionality as not needed to change
+     * Must be overridden for LibGDX inheritance to work correctly
+     */
     @Override
-    public void hide() 
-    {
+    public void hide() {}
 
-    }
-
+    /**
+     * Overridden LibGDX function
+     * Releases resources used by the screen.
+     */
     @Override
-    public void dispose() 
+    public void dispose()
     {
-        // Dispose of resources
         batch.dispose();
-        for (Texture texture : tileTexture) 
+        for (Texture texture : tileTexture)
         {
             texture.dispose();
         }
-        for (Texture texture : bikeTexture) 
+        for (Texture texture : bikeTexture)
         {
             texture.dispose();
         }
     }
 }
+
